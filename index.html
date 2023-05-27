@@ -5,8 +5,15 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script>
         function analyzeText() {
+            // Get the text from the input field
             var text = document.getElementById("text").value;
-            
+
+            // Disable the button and show spinner
+            var button = document.getElementById("analyze-button");
+            button.disabled = true;
+            button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Analyzing...';
+
+            // Make a fetch request to the Flask app
             fetch('https://bigfatjohn.spooderman11.repl.co/analyze_text', {
                 method: 'POST',
                 headers: {
@@ -14,7 +21,12 @@
                 },
                 body: JSON.stringify({text: text})
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
                 // Update the HTML with the results
                 document.getElementById("word-count").innerHTML = data.word_count;
@@ -25,6 +37,15 @@
                 document.getElementById("shortest-word").innerHTML = data.shortest_word;
                 document.getElementById("whitespace-count").innerHTML = data.whitespace_count;
                 document.getElementById("results-card").style.display = "block";
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while analyzing the text. Please try again later.');
+            })
+            .finally(() => {
+                // Enable the button and hide spinner
+                button.disabled = false;
+                button.innerHTML = 'Analyze Text';
             });
         }
     </script>
@@ -36,7 +57,7 @@
             <label for="text">Enter text:</label>
             <textarea id="text" class="form-control" rows="10"></textarea>
         </div>
-        <button class="btn btn-primary mb-3" onclick="analyzeText()">Analyze Text</button>
+        <button id="analyze-button" class="btn btn-primary mb-3" onclick="analyzeText()">Analyze Text</button>
         <div id="results-card" class="card" style="display: none;">
             <div class="card-body">
                 <h2 class="card-title">Results:</h2>
