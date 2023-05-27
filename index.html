@@ -5,11 +5,10 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script>
         function analyzeText() {
-            // Get the text from the input field
             var text = document.getElementById("text").value;
-
-            // Make a fetch request to the Flask app
-            fetch('/analyze_text', {
+            
+            fetch('https://bigfatjohn.spooderman11.repl.co/analyze_te
+                  ', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
